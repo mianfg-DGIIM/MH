@@ -180,12 +180,16 @@ double Particion::dgp() const {
 }
 
 bool Particion::esValida() const {
+  cout << "entered esvalida" << endl;
   for ( unsigned i = 0; i < _n_clusters; i++ ) {
-    for ( unsigned j = 0; j < _clusters.size(); j++ ) {
+    cout << "buscando instancia de cluster " << i << "...\n";
+    for ( unsigned j = 0; j < getSize(); j++ ) {
+      cout << "   en el j="<<j<<" es " << _clusters.at(j) << endl;
       if ( _clusters.at(j) == i ) break;
       if ( j == _clusters.size()-1 ) return false;
     }
   }
+  cout << "left esvalida" << endl;
 
   return true;
 }
