@@ -10,7 +10,8 @@ int main() {
   r.restr = -1;
   cout << r.restr << endl;*/
   cout << "Importando..." << endl;
-  PAR p("./datos/zoo_set.dat", "./datos/zoo_set_const_10.const", 7, 5);
+  PAR p("./datos/zoo_set.dat", "./datos/zoo_set_const_10.const", 7, 1000);
+  //p.printMe();
   //PAR p;
   
   /*auto inds = p.shuffleIndices();
@@ -29,6 +30,7 @@ int main() {
   part.printMe();*/
 
   //p.restartVecinoVirtual();
-  Particion part = p.busquedaLocal(10000);
+  p.busquedaGreedy();
+  //Particion part = p.busquedaLocal(10000);
   //part.printMe();
 }
