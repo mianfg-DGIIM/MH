@@ -1,0 +1,17 @@
+PRÁCTICA 1 - MH
+===============
+
+Alumno: Miguel Ángel Fernández Gutiérrez
+
+---------------
+
+Para ejecutar la práctica, introduzca el siguiente comando:
+
+    python fuentes/main.py nombre_set porc_restricciones algoritmo [num\_repeticiones]  [semilla]
+
+Inserte directamente python fuentes/main.py para una explicación más detallada de los argumentos.
+
+Ejemplos de ejecución:
+
+    python fuentes/main.py glass 10 bl
+    python fuentes/main.py bupa 20 greedy 1232543546

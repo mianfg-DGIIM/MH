@@ -13,8 +13,12 @@ class BusquedaLocal(PAR):
     self._generar_clusters_iniciales()
     self._generar_explorar_vecinos()
   
+  def reset(self):
+    PAR.reset(self)
+    self._generar_clusters_iniciales()
+    self._generar_explorar_vecinos()
+  
   def _calcular_lambda(self):
-    print("max_dist: ", self.get_dist_maxima())
     self.l = self.get_dist_maxima() / self.nr
   
   def f(self):
@@ -25,7 +29,7 @@ class BusquedaLocal(PAR):
       self._explorar_vecinos.clear()
     for i in range(self.n):
       for j in range(self.k):
-        if j != self.clusters[i] and len(self.get_cluster_indices(j)) > 1:
+        if j != self.clusters[i]:
           self._explorar_vecinos.append((i,j))
 
   def restart_vecino_virtual(self):
@@ -47,13 +51,6 @@ class BusquedaLocal(PAR):
     return v
   
   def vecino_valido(self, v):
-    # suponiendo que configuración anterior es válida
-    #index, cluster_to, cluster_from = v[0], v[1], self.clusters[v[0]]
-    #self.clusters[index] = cluster_to
-    #cond1 = sum(1 for i in self.clusters if i == cluster_to) > 0
-    #cond2 = sum(1 for i in self.clusters if i == cluster_from) > 0
-    #self.clusters[index] = cluster_from
-    #return cond1 and cond2
     restore = self.clusters[v[0]]
     self.clusters[v[0]] = v[1]
     es_valido = self.es_clusters_valido()
@@ -65,39 +62,6 @@ class BusquedaLocal(PAR):
 
   def ejecutar_algoritmo(self, max_iters):
     self._generar_clusters_iniciales()
-    """it = 0
-    stop = False
-    f_prev = self.f()
-    while it < max_iters and not stop:
-      print("it=",it)
-      self.restart_vecino_virtual()
-      while True:
-        v = self.get_next_vecino_virtual()
-        if v:
-          index, cluster_to, cluster_from = v[0], v[1], self.clusters[v[0]]
-          self.clusters[index] = cluster_to
-          centroide_prev_cluster_to = self.centroides[cluster_to]
-          centroide_prev_cluster_from = self.centroides[cluster_from]
-          self._actualizar_centroide(cluster_to)
-          self._actualizar_centroide(cluster_from)
-          f_new = self.f()
-          if f_new < f_prev:
-            f_prev = f_new
-            break
-          else:
-            self.clusters[index] = cluster_from
-            self.centroides[cluster_to] = centroide_prev_cluster_to
-            self.centroides[cluster_from] = centroide_prev_cluster_from
-        else:
-          stop = True
-          break
-      it += 1
-
-    print("f: ", self.f())
-    print("it: ", it)
-    print("desv: ", self.get_dg())
-    print("infe: ", self.get_infeasibility())
-    #return self.clusters"""
     self._generar_explorar_vecinos()
 
     random_acceso = list(range(len(self._explorar_vecinos)))
@@ -117,10 +81,10 @@ class BusquedaLocal(PAR):
         self.clusters[index] = cluster_to
 
         if self.es_clusters_valido():
+          it += 1
           self._actualizar_centroide(cluster_to)
           self._actualizar_centroide(cluster_from)
           f_vecino = self.f()
-          it += 1
           if f_vecino < f_prev:
             f_prev = f_vecino
             self._generar_explorar_vecinos()
@@ -129,18 +93,16 @@ class BusquedaLocal(PAR):
             break
           else:
             restablecer = True
-            return_estado_anterior = True
         else:
           restablecer = True
         if restablecer:
           self.clusters[index] = cluster_from
-          if return_estado_anterior:
-            self._actualizar_centroide(cluster_to)
-            self._actualizar_centroide(cluster_from)
-            return_estado_anterior = False
+          self._actualizar_centroide(cluster_to)
+          self._actualizar_centroide(cluster_from)
           restablecer = False
-    print("f: ", self.f())
-    print("it: ", it)
-    print("desv: ", self.get_dg())
-    print("infe: ", self.get_infeasibility())
+    
+    print("\tIteraciones empleadas:", it)
+    print("\tDesviación general:   ", self.get_dg())
+    print("\tInfeasibility:        ", self.get_infeasibility())
+    print("\tFunc. objetivo:       ", self.f())
     return self.clusters

@@ -4,10 +4,6 @@ from math import sqrt
 
 
 def dist(d1, d2):
-  #suma = 0
-  #for i in range(len(d1)):
-  #  suma += (d1[i]-d2[i])**2
-  #return sqrt(suma)
   return np.linalg.norm(d2-d1)
 
 class PAR:
@@ -33,17 +29,16 @@ class PAR:
     self._calcular_dists_datos()
     self._inicializar_clusters()
   
-  def __str__(self):
-    return f"datos: {self.datos}\n" \
-      + f"clusters: {self.clusters}\n" \
-      + f"n: {self.n}\n" \
-      + f"k: {self.k}\n" \
-      + f"d: {self.d}\n" \
-      + f"nr: {self.nr}\n"
-    #print("restr_mat: ", self.restr_mat)
-    #print("restr_list: ", self.restr_list)
-    #print("centroides: ", self.centroides)
+  def reset(self):
+    self._inicializar_clusters()
   
+  def __str__(self):
+    return "" \
+      + f"\tNum. datos:         {self.n}\n" \
+      + f"\tNum. clusters:      {self.k}\n" \
+      + f"\tDimensión:          {self.d}\n" \
+      + f"\tNum. restricciones: {self.nr}\n"
+
   def _leer_datos(self, archivo_datos):
     datos = []
     with open(archivo_datos) as archivo:
@@ -76,7 +71,6 @@ class PAR:
   def _actualizar_centroides(self):
     self.centroides = []
     for i in range(self.k):
-      #c = self.get_centroide(i) 
       self.centroides.append(self.get_centroide(i))
   
   def _actualizar_centroide(self, id_cluster):
@@ -88,12 +82,6 @@ class PAR:
       self.clusters.append(random.randrange(0, self.k))
     random.shuffle(self.clusters)
     self._actualizar_centroides()
-  
-  def _generar_centroides_aleatorios(self):
-    inds = list(range(self.n))
-    random.shuffle(inds)
-    for i in range(self.n):
-      self.centroides.append(self.datos[inds[i]].copy())
 
   def get_dist_maxima(self):
     return max([max(row) for row in self.datos])
@@ -102,15 +90,13 @@ class PAR:
     return [i for i in range(self.n) if clusters[i] == id_cluster]
   
   def get_cluster_indices(self, id_cluster):
-    #return [i for i in range(self.n) if self.clusters[i] == id_cluster]
     return self.calcular_cluster_indices(id_cluster, self.clusters)
 
   def calcular_cluster_datos(self, id_cluster, clusters):
     return self.datos[self.calcular_cluster_indices(id_cluster, clusters)]
   
   def get_cluster_datos(self, id_cluster):
-    #return self.datos[self.get_cluster_indices(id_cluster)]
-    return self.calcular_cluster_datos(id_cluster, self.clusters)
+    return self.datos[self.get_cluster_indices(id_cluster)]
 
   def v(self, clusters, restr):
     r0, r1, r2 = restr[0], restr[1], restr[2]
@@ -130,17 +116,17 @@ class PAR:
     return self.calcular_infeasibility(self.clusters)
   
   def get_incr_infeasibility(self, i, j):
-    inf_0 = self.get_infeasibility()#0
-    #for j in range(self.n):
-    #  if self.v(self.clusters, (i, j, self.restr_mat[i][j])):
-    #    inf_0 += 1
-    restore = self.clusters[i]
+    prev_cluster = self.clusters[i]
+    inf_0 = 0
+    for k in range(self.n):
+      if self.v(self.clusters, (i, k, self.restr_mat[i][k])):
+        inf_0 += 1
     self.clusters[i] = j
-    inf_1 = self.get_infeasibility()#0
-    #for j in range(self.n):
-    #  if self.v(self.clusters, (i, j, self.restr_mat[i][j])):
-    #    inf_1 += 1
-    self.clusters[i] = restore
+    inf_1 = 0
+    for j in range(self.n):
+      if self.v(self.clusters, (i, j, self.restr_mat[i][j])):
+        inf_1 += 1
+    self.clusters[i] = prev_cluster
     return inf_1 - inf_0
 
   def calcular_centroide(self, id_cluster, clusters):
