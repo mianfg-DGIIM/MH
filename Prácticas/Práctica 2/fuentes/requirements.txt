@@ -1,0 +1,2 @@
+alive-progress==1.6.2
+numpy==1.20.1
