@@ -1,1 +1,0 @@
-from algoritmos.par_ag import AGG, AGE

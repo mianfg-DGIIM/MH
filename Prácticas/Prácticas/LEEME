@@ -1,0 +1,32 @@
+Prácticas MH 2020/2021
+======================
+
+Alumno:  Miguel Ángel Fernández Gutiérrez
+Curso:   2020/2021
+Grupo:   MH3
+Entrega: Práctica 3
+
+----------------------
+
+Para ejecutar el programa, use Python 3 y ejecute el script main.py. Este script hace uso de argparse
+para poder pasar valores, por lo que simplemente inserte en la consola
+
+	> python main.py -h
+
+y un texto de ayuda con todos los comandos posibles aparecerá en pantalla. A continuación algunos
+ejemplos:
+
+* Ejecutar 4 repeticiones de ES usando el set bupa con 10 % de restricciones:
+    > python main.py -N bupa -P 10 -A es -R 4
+* Ejecutar 5 repeticiones de BMB usando el set glass con 20 % de restricciones e imprimir los
+  resultados en un fichero CSV llamado ./resultados.csv:
+    > python main.py -N glass -P 20 -A bmb -R 5 -C -CF ./resultados.csv
+* Ejecutar 5 repeticiones de ILS-ES usando el set zoo con 10 % de restricciones, cambiando la
+  semilla a 100:
+    > python main.py -N zoo -P 10 -A ils -ai es -R 5 -S 100
+
+Es importante destacar que los algoritmos ILS e ILS-ES están implementados en la misma función,
+por lo que:
+
+* Para ejecutarILS, use los parámetros '-A ils -ai bl' o directamente '-A ils' (es el por defecto).
+* Para ejecutar ILS-ES, use los parámetros '-A ils -ai es'.
